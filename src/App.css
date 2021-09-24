@@ -15,9 +15,6 @@ body{
   width: 100vw;
   display: flex;
 }
-@media (min-width:0px) and (max-width:600px){
-
-}
 
 .loading-box{
   height: 100vh;
@@ -47,7 +44,13 @@ body{
   padding-right: 30px;
   position: relative;
   background: inherit;
-  overflow: hidden;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  scrollbar-width: none;  
+}
+
+.sidebar::-webkit-scrollbar {
+  display: none;
 }
 
 .sidebar:after{
@@ -172,7 +175,10 @@ color: #fff;
 
 .city-loc{
   margin-top: 15px;
-  
+}
+
+.city-loc:hover{
+  cursor: pointer;
 }
 
 hr{

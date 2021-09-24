@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
-import { FaCloud } from "react-icons/fa";
-import { FiSearch } from "react-icons/fi";
+import { FaCloud, FaCloudRain, FaCloudMeatball} from "react-icons/fa";
+import { FiSearch, FiCloudLightning } from "react-icons/fi";
+import {GiSunCloud} from "react-icons/gi";
 import axios from 'axios';
 import moment from 'moment';
 import loader from "../src/assets/Spinner.gif";
@@ -25,10 +26,47 @@ function App() {
     const day = moment.unix(weatherDetails.dt);
     return (day.get("hour")+":" + day.get("minute") + " " +day.format("dddd") + ", " +day.get("date") + " " + day.format("MMM") + " " + day.format("YY") );
   }
+
+  const getWeatherIcon = () =>{
+    switch(weatherDetails.weather[0].main){
+      case "Clear":
+        return(
+          <FaCloud className="weather-icon"/>
+        )
+
+      case "Thunderstorm":
+        return(
+          <FiCloudLightning className="weather-icon"/>
+        )
+
+      case "Haze":
+        return(
+          <GiSunCloud className="weather-icon"/>
+        )
+
+      case "Cloudy":
+        return(
+          <FaCloudMeatball className="weather-icon"/>
+        )
+
+      case "Rainy":
+        return(
+          <FaCloudRain className="weather-icon"/>
+        )
+
+      default:
+        return(
+          <FaCloud className="weather-icon"/>
+        )
+    }
+  }
+
+
   useEffect(() => {
     setLoading(true);
     getWeatherDetails("Siuri");
   }, []);
+
 
   if(loading){
     return(
@@ -63,7 +101,7 @@ function App() {
             </div>
           </div>
           <div className="icon-box">
-            <FaCloud className="weather-icon"/>
+            {getWeatherIcon()}
           <h3 className="weather-type">{weatherDetails.weather[0].main}</h3>
           </div>
         </div>
@@ -82,7 +120,7 @@ function App() {
         <hr/>
           <p className="city-loc" onClick={()=>getWeatherDetails("darjeeling")}>Darjeeling</p>
           <p className="city-loc" onClick={()=>getWeatherDetails("durgapur")}>Durgapur</p>
-          <p className="city-loc" onClick={()=>getWeatherDetails("hooghly")}>Hooghly</p>
+          <p className="city-loc" onClick={()=>getWeatherDetails("bishnupur")}>Bishnupur</p>
           <p className="city-loc" onClick={()=>getWeatherDetails("kolkata")}>Kolkata</p>
           <p className="city-loc" onClick={()=>getWeatherDetails("malda")}>Malda</p>
           <p className="city-loc" onClick={()=>getWeatherDetails("bolpur")}>Bolpur</p>
