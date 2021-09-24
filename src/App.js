@@ -1,10 +1,42 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import { FaCloud } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
+import axios from 'axios';
+import moment from 'moment';
 import "./App.css";
 
+
 function App() {
+  const [weatherDetails, setWeatherDetails] = useState({});
+  const [loading, setLoading] = useState(true);
+  const getWeatherDetails = async (cityname) =>{
+    setLoading(true);
+    try {
+      const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${cityname}&appid=${process.env.REACT_APP_API_KEY}&units=metric`);
+      setWeatherDetails(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  }
+  const getDateAndTime = () =>{
+    const day = moment.unix(weatherDetails.dt);
+    return (day.get("hour")+":" + day.get("minute") + " " +day.format("dddd") + ", " +day.get("date") + " " + day.format("MMM") + " " + day.format("YY") );
+  }
+  useEffect(() => {
+    setLoading(true);
+    getWeatherDetails("Siuri");
+  }, []);
+
+  if(loading){
+    return(
+      <h1>loading</h1>
+    );
+  }
+
   return (
+    <>
     <div className="background">
       <div className="content">
         <div className="title-box">
@@ -13,7 +45,7 @@ function App() {
 
         <div className="weather-box">
           <div className="temperature-box">
-            <h1 className="temp-value">16</h1>{" "}
+            <h1 className="temp-value">{weatherDetails.main.temp ?? ""}</h1>{" "}
             <h1 className="degree">
               <sup> {"\u00B0"} </sup>
             </h1>
@@ -21,15 +53,15 @@ function App() {
 
           <div className="city-name-box">
             <div className="location">
-              <h1 className="city">Kolkata</h1>
+              <h1 className="city">{weatherDetails.name}</h1>
             </div>
             <div className="date-time-box">
-              <h3 className="datetime">06:09 - Monday, 23 sep 19</h3>
+              <h3 className="datetime">{getDateAndTime()}</h3>
             </div>
           </div>
           <div className="icon-box">
             <FaCloud className="weather-icon"/>
-          <h3 className="weather-type">Cloudy</h3>
+          <h3 className="weather-type">{weatherDetails.weather[0].main}</h3>
           </div>
         </div>
       </div>
@@ -45,30 +77,34 @@ function App() {
         <div className="city-list">
         <h2 className="another-location">Another Location</h2>
         <hr/>
-          <p className="city-loc">Durgapur</p>
-          <p className="city-loc">Suri</p>
-          <p className="city-loc">Durgapur</p>
-          <p className="city-loc">Durgapur</p>
-          <p className="city-loc">Durgapur</p>
+          <p className="city-loc" onClick={()=>getWeatherDetails("darjeeling")}>Darjeeling</p>
+          <p className="city-loc" onClick={()=>getWeatherDetails("durgapur")}>Durgapur</p>
+          <p className="city-loc" onClick={()=>getWeatherDetails("hooghly")}>Hooghly</p>
+          <p className="city-loc" onClick={()=>getWeatherDetails("kolkata")}>Kolkata</p>
+          <p className="city-loc" onClick={()=>getWeatherDetails("malda")}>Malda</p>
+          <p className="city-loc" onClick={()=>getWeatherDetails("bolpur")}>Bolpur</p>
+          <p className="city-loc" onClick={()=>getWeatherDetails("siuri")}>Siuri</p>
         </div>
         <hr className="hr"/>
+
         <div className="weather-details">
           <h2 className="weather">Weather Details</h2>
           <div className="weather-name">
             <p className="text">Cloudy</p>
-            <p className="text">86%</p>
+            <p className="text">{weatherDetails.clouds.all}%</p>
           </div>
           <div className="weather-name">
             <p className="text">Humidity</p>
-            <p className="text">76%</p>
+            <p className="text">{weatherDetails.main.humidity}%</p>
           </div>
           <div className="weather-name">
             <p className="text">Wind</p>
-            <p className="text">80%</p>
+            <p className="text">{weatherDetails.wind.speed}</p>
           </div>
         </div>
       </div>
     </div>
+    </>
   );
 }
 
