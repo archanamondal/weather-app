@@ -3,6 +3,7 @@ import { FaCloud } from "react-icons/fa";
 import { FiSearch } from "react-icons/fi";
 import axios from 'axios';
 import moment from 'moment';
+import loader from "../src/assets/Spinner.gif";
 import "./App.css";
 
 
@@ -31,7 +32,9 @@ function App() {
 
   if(loading){
     return(
-      <h1>loading</h1>
+      <div className="loading-box">
+        <img className="loading-img" src={loader} alt="" />
+      </div>
     );
   }
 
